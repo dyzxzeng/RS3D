@@ -1,25 +1,25 @@
 #!/bin/bash
 
-# 查找 read_data.py 文件
+# Find the read_data.py file
 SCRIPT_PATH=$(find /home -name "read_data.py" 2>/dev/null | head -n 1)
 
 if [ -z "$SCRIPT_PATH" ]; then
-    echo "❌ Error: read_data.py not found!"
+    echo "Error: read_data.py not found!"
     exit 1
 fi
 
 PYTHON_PATH=$(which python3)
 SERVICE_FILE="/etc/systemd/system/read_data.service"
-SCRIPT_DIR=$(dirname "$SCRIPT_PATH")  # 获取 read_data.py 所在目录
+SCRIPT_DIR=$(dirname "$SCRIPT_PATH")  # Get the directory where read_data.py is located
 
-# 打印信息
-echo "✅ Found read_data.py at: $SCRIPT_PATH"
-echo "🐍 Using Python at: $PYTHON_PATH"
-echo "📝 Service file will be created at: $SERVICE_FILE"
-echo "📂 Logs will be stored in: $SCRIPT_DIR"
+# Print information
+echo "Found read_data.py at: $SCRIPT_PATH"
+echo "Using Python at: $PYTHON_PATH"
+echo "Service file will be created at: $SERVICE_FILE"
+echo "Logs will be stored in: $SCRIPT_DIR"
 
-# 创建 systemd service 文件
-echo "🚀 Creating systemd service file..."
+# Create the systemd service file
+echo "Creating systemd service file..."
 sudo bash -c "cat > $SERVICE_FILE" <<EOF
 [Unit]
 Description=Run read_data.py on startup
@@ -39,16 +39,16 @@ User=pi
 WantedBy=multi-user.target
 EOF
 
-# 赋予正确的权限
+# Set correct permissions
 sudo chmod 644 $SERVICE_FILE
 
-# 重新加载 systemd 配置
-echo "🔄 Reloading systemd daemon..."
+# Reload systemd configuration
+echo "Reloading systemd daemon..."
 sudo systemctl daemon-reload
 
-# 启动并启用服务
-echo "🚀 Starting and enabling the service..."
+# Start and enable the service
+echo "Starting and enabling the service..."
 sudo systemctl start read_data.service
 sudo systemctl enable read_data.service
 
-echo "✅ Done! read_data.service is now set up and running."
+echo "Done! read_data.service is now set up and running."
