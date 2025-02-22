@@ -33,7 +33,7 @@ StandardError=append:$SCRIPT_DIR/read_data_error.log
 Restart=always
 RestartSec=30
 TimeoutStartSec=300
-User=pi
+User=myshake
 
 [Install]
 WantedBy=multi-user.target
