@@ -78,8 +78,8 @@ cnt = 0
 # MQTT Configuration
 MQTT_BROKER = "My MQTT Broker"
 MQTT_PORT = 0
-MQTT_user = "xxx"
-MQTT_password = "xxx"
+MQTT_user = None
+MQTT_password = None
 MQTT_TOPIC_PRE = f"/UGA/{unit.replace(':', '')}/"
 DATA_INTERVAL = 10000  # 100Hz (10,000 microseconds between samples)
 
@@ -155,7 +155,8 @@ if __name__ == '__main__':
     # MQTT
     unique_client_id = f"client_{uuid.uuid4()}"
     mqtt_client = mqtt.Client(client_id=unique_client_id, callback_api_version=CallbackAPIVersion.VERSION2)
-    mqtt_client.username_pw_set(username=MQTT_user, password=MQTT_password)
+    if MQTT_user is not None:
+        mqtt_client.username_pw_set(username=MQTT_user, password=MQTT_password)
 
 
     mqtt_thread = threading.Thread(target=upload_data, args=(mqtt_client,), daemon=True)
