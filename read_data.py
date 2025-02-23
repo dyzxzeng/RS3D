@@ -16,42 +16,41 @@ import netifaces
 
 # Initialize a queue for multi-threading
 data_queue = queue.Queue(2000)
+def mac_address():
 
-# def mac_address():
-#
-#    macEth = "unit.name"
-#    data = netifaces.interfaces()
-#    for i in data:
-#       if i == 'wlan0': #'en0': # 'eth0':
-#          interface = netifaces.ifaddresses(i)
-#          info = interface[netifaces.AF_LINK]
-#          if info:
-#             macEth = interface[netifaces.AF_LINK][0]["addr"]
-#
-#    return macEth
+   macEth = None
+   data = netifaces.interfaces()
+   for i in data:
+      if i == 'wlan0': #'en0': # 'eth0':
+         interface = netifaces.ifaddresses(i)
+         info = interface[netifaces.AF_LINK]
+         if info:
+            macEth = interface[netifaces.AF_LINK][0]["addr"]
 
-def get_mac_address(interface="eth0"):
-    try:
-        # Run ifconfig (works on older systems)
-        result = subprocess.run(["ifconfig", interface], capture_output=True, text=True)
-        output = result.stdout
+   return macEth
 
-        # Fallback to "ip link show" for newer systems if ifconfig fails
-        if not output:
-            result = subprocess.run(["ip", "link", "show", interface], capture_output=True, text=True)
-            output = result.stdout
+# def get_mac_address(interface="eth0"):
+#     try:
+#         # Run ifconfig (works on older systems)
+#         result = subprocess.run(["ifconfig", interface], capture_output=True, text=True)
+#         output = result.stdout
 
-        # Regex to extract MAC address (matches standard MAC format XX:XX:XX:XX:XX:XX)
-        mac_match = re.search(r"([0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2})", output)
+#         # Fallback to "ip link show" for newer systems if ifconfig fails
+#         if not output:
+#             result = subprocess.run(["ip", "link", "show", interface], capture_output=True, text=True)
+#             output = result.stdout
 
-        if mac_match:
-            return mac_match.group(1)  # Extracted MAC address
-        else:
-            return None  # MAC address not found
+#         # Regex to extract MAC address (matches standard MAC format XX:XX:XX:XX:XX:XX)
+#         mac_match = re.search(r"([0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2})", output)
 
-    except Exception as e:
-        print(f"Error retrieving MAC address: {e}")
-        return None
+#         if mac_match:
+#             return mac_match.group(1)  # Extracted MAC address
+#         else:
+#             return None  # MAC address not found
+
+#     except Exception as e:
+#         print(f"Error retrieving MAC address: {e}")
+#         return None
 
 # Read the device information from system
 with open('/opt/settings/sys/ip.txt', 'r') as file:
@@ -62,8 +61,9 @@ if struct.calcsize("L") == 4:
 elif struct.calcsize("L") == 8:
     timestamp_byte = "L"
 
-unit = get_mac_address("eth0")
-
+# unit = get_mac_address("eth0")
+unit = mac_address()
+print(f'unit={unit}')
 # Port information for sensor
 port = 8888                             # Port to bind to
 sock = s.socket(s.AF_INET, s.SOCK_DGRAM | s.SO_REUSEADDR)
