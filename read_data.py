@@ -128,6 +128,10 @@ def upload_data(client):
             packed_data = pack_beddot_data(unit, start_timestamp, DATA_INTERVAL, int_data_list)
             if channel == 'Z':
                 channel = 'geophone'
+            elif channel == 'E':
+                channel = 'X'
+            elif channel == 'N':
+                channel = 'Y'
             MQTT_TOPIC = MQTT_TOPIC_PRE + channel
             # print(packed_data, MQTT_TOPIC)
             client.publish(MQTT_TOPIC, packed_data, qos=1)
